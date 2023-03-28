@@ -1,0 +1,53 @@
+﻿CREATE TABLE public.genre (
+	id serial4 NOT NULL,
+	CONSTRAINT genre_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.artist (
+	id serial4 NOT NULL,
+	nikname varchar(50) NOT NULL,
+	CONSTRAINT artist_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.album (
+	id serial4 NOT NULL,
+	title varchar(50) NOT NULL,
+	year_ varchar(5) NOT NULL,
+	CONSTRAINT album_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.song (
+	id serial4 NOT NULL,
+	name_song varchar(150) NOT NULL,
+	duration varchar(4) NOT NULL,
+	fk_song_album int4 NULL,
+	CONSTRAINT song_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.collection (
+	id serial4 NOT NULL,
+	name_collection varchar(150) NOT NULL,
+	year_collection varchar(4) NOT NULL,
+	CONSTRAINT collection_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.genre_artist (
+	genre_id int4 NOT NULL,
+	artist_id int4 NOT NULL,
+	CONSTRAINT genre_artist_pk PRIMARY KEY (genre_id, artist_id)
+);
+
+CREATE TABLE public.artist_album (
+	artist_id int4 NOT NULL,
+	album_id int4 NOT NULL,
+	CONSTRAINT artist_album_pk PRIMARY KEY (artist_id, album_id)
+);
+
+CREATE TABLE public.collection_song (
+	collection_id int4 NOT NULL,
+	song_id int4 NOT NULL,
+	CONSTRAINT collection_song_pk PRIMARY KEY (collection_id, song_id)
+);
+
+
+
