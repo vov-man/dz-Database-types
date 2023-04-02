@@ -1,53 +1,47 @@
-﻿CREATE TABLE public.genre (
-	id serial4 NOT NULL,
-	CONSTRAINT genre_pkey PRIMARY KEY (id)
+﻿CREATE TABLE IF NOT EXIST genre (
+	id SERIAL PRIMARY KEY,
+	title VARCHAR(50) UNIQUE NOT NULL,
 );
 
-CREATE TABLE public.artist (
-	id serial4 NOT NULL,
+CREATE TABLE IF NOT EXIST artist (
+	id SERIAL PRIMARY KEY,
 	nikname varchar(50) NOT NULL,
-	CONSTRAINT artist_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE public.album (
-	id serial4 NOT NULL,
+CREATE TABLE IF NOT EXIST album (
+	id SERIAL PRIMARY KEY,
 	title varchar(50) NOT NULL,
-	year_ varchar(5) NOT NULL,
-	CONSTRAINT album_pkey PRIMARY KEY (id)
+	year_ INTEGER NOT NULL,
 );
 
-CREATE TABLE public.song (
-	id serial4 NOT NULL,
+CREATE TABLE IF NOT EXIST song (
+	id SERIAL PRIMARY KEY,
 	name_song varchar(150) NOT NULL,
-	duration varchar(4) NOT NULL,
-	fk_song_album int4 NULL,
-	CONSTRAINT song_pkey PRIMARY KEY (id)
+	duration INTEGER NOT NULL,
+	album_id INTEGER NOT NULL REFERENCES album(id),
 );
 
-CREATE TABLE public.collection (
-	id serial4 NOT NULL,
+CREATE TABLE IF NOT EXIST collection (
+	id SERIAL PRIMARY KEY,
 	name_collection varchar(150) NOT NULL,
-	year_collection varchar(4) NOT NULL,
-	CONSTRAINT collection_pkey PRIMARY KEY (id)
+	year_collection INTEGER NOT NULL,
 );
 
-CREATE TABLE public.genre_artist (
-	genre_id int4 NOT NULL,
-	artist_id int4 NOT NULL,
-	CONSTRAINT genre_artist_pk PRIMARY KEY (genre_id, artist_id)
+CREATE TABLE IF NOT EXIST genre_artist (
+	genre_id INTEGER REFERENCES genre(id),
+	artist_id INTEGER REFERENCES artist(id),
+	CONSTRAINT pk PRIMARY KEY (genre_id, artist_id)
 );
 
-CREATE TABLE public.artist_album (
-	artist_id int4 NOT NULL,
-	album_id int4 NOT NULL,
-	CONSTRAINT artist_album_pk PRIMARY KEY (artist_id, album_id)
+CREATE TABLE IF NOT EXIST artist_album (
+	album_id INTEGER REFERENCES album(id),
+	artist _id INTEGER REFERENCES artist(id),
+	CONSTRAINT pk PRIMARY KEY (album_id, artist_id)
 );
 
-CREATE TABLE public.collection_song (
-	collection_id int4 NOT NULL,
-	song_id int4 NOT NULL,
-	CONSTRAINT collection_song_pk PRIMARY KEY (collection_id, song_id)
+CREATE TABLE IF NOT EXIST collection_song (
+	collection_id INTEGER REFERENCES collection(id),
+	song_id INTEGER REFERENCES song(id),
+	CONSTRAINT pk PRIMARY KEY (collection_id, song_id)
 );
-
-
 
