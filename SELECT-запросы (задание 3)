@@ -1,0 +1,80 @@
+#Количество исполнителей в каждом жанре.---------------------------
+select g.title, count(a.nikname)
+from genre as g
+left join genre_artist as ga on g.id = ga.genre_id
+left join artist as a on ga.artist_id = a.id
+group by g.title
+order by count(a.id) DESC; 
+#Количество треков, вошедших в альбомы 2019–2020 годов.------------
+select s.name_song, a.year
+from album as a
+left join song as s on s.fk_song_album = a.id
+where (a.year >= 2019) and (a.year <= 2020)
+#Средняя продолжительность треков по каждому альбому.--------------
+select a.title, AVG(s.duration)
+from album as a
+left join song as s on s.fk_song_album = a.id
+group by a.title
+order by AVG(s.duration)
+#Все исполнители, которые не выпустили альбомы в 2020 году.--------
+select distinct a.nikname
+from artist as a
+where a.nikname not in (
+    select distinct a.nikname 
+    from artist as a
+    left join artist_album as aa on a.id = aa.artist_id 
+    left join album as al on al.id = aa.album_id
+    where al.year = 2020
+)
+order by a.nikname 
+#Названия сборников, в которых присутствует конкретный исполнитель (выберите его сами).
+select distinct c.name_collection
+from collection as c
+left join collection_song as cs on c.id = cs.collection_id
+left join song as s on s.id = cs.song_id 
+left join album as al on al.id = s.fk_song_album 
+left join artist_album as aa on aa.album_id = al.id
+left join artist as a on a.id = aa.artist_id 
+where a.nikname like '%%MUROVEI%%'
+order by c.name_collection 
+#Названия альбомов, в которых присутствуют исполнители более чем одного жанра.
+select a.title
+from album as a
+left join artist_album as aa on a.id = aa.album_id
+left join artist as a2 on a2.id = aa.artist_id 
+left join genre_artist as ga on a2.id = ga.artist_id 
+left join genre as g on g.id = ga.genre_id
+group by a.title
+having count(distinct g.title) > 1
+order by a.title
+#Наименования треков, которые не входят в сборники.---------------------------
+select s.name_song
+from song as s
+left join collection_song as cs on s.id = cs.song_id 
+where cs.song_id is null
+#Исполнитель или исполнители, написавшие самый короткий по продолжительности трек, — теоретически таких треков может быть несколько.
+select a2.nikname, s.duration 
+from song as s
+left join album as a on a.id = s.fk_song_album 
+left join artist_album as aa on aa.album_id = a.id
+left join artist as a2 on a2.id = aa.artist_id 
+group by a2.nikname, s.duration 
+having s.duration = (select min(duration) from song)
+order by a2.nikname  
+#Названия альбомов, содержащих наименьшее количество треков.-------------------
+select distinct a.title
+from album as a
+left join song as s on s.fk_song_album = a.id
+where s.fk_song_album in (
+    select fk_song_album
+    from song
+    group by fk_song_album
+    having count(id) = (
+        select count(id)
+        from song 
+        group by fk_song_album
+        order by count
+        limit 1
+    )
+)
+order by a.title 
